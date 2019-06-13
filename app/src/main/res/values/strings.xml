@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">buttonbase</string>
+    <string name="admob_app_id">ca-app-pub-3268554948129577</string>
+    <string name="banner_ad_id">ca-app-pub-3268554948129577/7500665431</string>
+    <string name="interstitial_ad_id">ca-app-pub-3268554948129577/1865744117</string>
+    <string name="rate_title">Loving our app?</string>
+    <string name="rate_text">Support our hard work by leaving us good rating on Google Play!</string>
+    <string name="rate_btn_ok">COOL!, TAKE ME THERE!</string>
+    <string name="rate_btn_later">REMIND ME LATER!</string>
+    <string name="rate_btn_never">NO, THANKS</string>
+    <string name="label_disclaimer">Disclaimer</string>
+
+</resources>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#343434"
+        tools:context=".MainActivity">
+
+    <ImageButton
+            android:id="@+id/btnSound"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/btn_bg"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="btnSoundClick"/>
+
+    <ImageButton
+            android:id="@+id/btnFollowFb"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/facebook_box"
+            android:background="@android:color/transparent"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@id/adView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/btnFollowTwtr"
+            android:onClick="btnFollowFbClicked"/>
+
+    <ImageButton
+            android:id="@+id/btnFollowTwtr"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/twitter"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toTopOf="@id/adView"
+            app:layout_constraintLeft_toRightOf="@id/btnFollowIg"
+            app:layout_constraintRight_toLeftOf="@id/btnFollowFb"
+            android:onClick="btnFollowTwitterClicked"/>
+
+    <ImageButton
+            android:id="@+id/btnFollowIg"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/instagram"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toTopOf="@id/adView"
+            app:layout_constraintLeft_toRightOf="@id/btnFollowTwtr"
+            app:layout_constraintRight_toLeftOf="@id/btnShareSM"
+            android:onClick="btnFollowIgClicked"/>
+
+    <ImageButton
+            android:id="@+id/btnShareSM"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/share_variant"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toTopOf="@id/adView"
+            app:layout_constraintLeft_toRightOf="@id/btnFollowIg"
+            app:layout_constraintRight_toRightOf="parent"
+            android:onClick="btnShareSMClicked"/>
+
+    <Button
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            android:background="@drawable/button_bg_solid"
+            android:text="set as ringtone"
+            android:drawableStart="@drawable/cellphone_sound"
+            android:textColor="@android:color/white"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintBottom_toTopOf="@id/btnFollowIg"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnSound"
+            android:onClick="btnRingtoneClicked"/>
+
+    <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:adSize="SMART_BANNER"
+            app:adUnitId="@string/banner_ad_id" />
+</androidx.constraintlayout.widget.ConstraintLayout>
