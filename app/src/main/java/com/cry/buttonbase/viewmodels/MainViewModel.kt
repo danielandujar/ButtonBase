@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.cry.buttonbase.models.Repositories.IpRepository
 import com.google.firebase.analytics.FirebaseAnalytics
+import java.io.File
 
 class MainViewModel(application : Application) : ViewModelBase(application)
 {
@@ -20,6 +21,11 @@ class MainViewModel(application : Application) : ViewModelBase(application)
     val ButtonPressed : LiveData<Boolean> get() = mButtonPressed
 
     val mFirebaseAnalytics = FirebaseAnalytics.getInstance(app)
+    val firebaseUtils = FirebaseUtils()
+    var fileExists = false
+
+    private var _fileExistData = MutableLiveData<Boolean>()
+    val fileExistData : LiveData<Boolean> get() = _fileExistData
 
     var mp = MediaPlayer()
 
@@ -39,6 +45,21 @@ class MainViewModel(application : Application) : ViewModelBase(application)
         //initialize interstitial ad
         adManager.createInterstitial()
 
+        val localFile = File(app.filesDir, "sound.mp3")
+
+        fileExists = localFile.isFile
+        _fileExistData.postValue(fileExists)
+
+        firebaseUtils.authUser(app) {
+            if (it) {
+                if (!fileExists)
+                    firebaseUtils.getFile{ downloaded ->
+                        fileExists = downloaded
+                        _fileExistData.postValue(fileExists)
+                    }
+
+            }
+        }
     }
 
     fun btnSoundPressed()
@@ -73,26 +94,40 @@ class MainViewModel(application : Application) : ViewModelBase(application)
 
     private fun playSound()
     {
-        count++
-        mp = MediaPlayer()
-        val afd = app.assets.openFd("sound.mp3")
-        mp.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-        mp.setOnCompletionListener {
+        if (fileExists) {
+            count++
+            mp = MediaPlayer()
+
+            val file = File(app.filesDir, "sound.mp3")
             try {
-                mButtonPressed.postValue(false)
-                mp.stop()
-            } catch (ex: Exception) {
-                Log.wtf("BitmapError", "Here's the OutOfMemoryException... " + ex.message)
-                ex.printStackTrace()
+                mp.setDataSource(file.path)
+                mp.setOnCompletionListener {
+                    try {
+                        mButtonPressed.postValue(false)
+                        mp.stop()
+                    } catch (ex: Exception) {
+                        Log.wtf("BitmapError", "Here's the OutOfMemoryException... " + ex.message)
+                        ex.printStackTrace()
+                    }
+                }
+
+                //val afd = app.assets.openFd("sound.mp3")
+                //mp.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+
+                mp.prepare()
+
             }
+            catch (e : java.lang.Exception)
+            {
+                e.printStackTrace()
+            }
+            mp.start()
+
+            mButtonPressed.postValue(true)
+
+            if ((count % steps) == 0)
+                adManager.showInterstitialAd()
         }
-        mp.prepare()
-        mp.start()
-
-        mButtonPressed.postValue(true)
-
-        if ((count%steps) == 0)
-            adManager.showInterstitialAd()
     }
 
     private fun stopSound()

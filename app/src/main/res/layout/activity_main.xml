@@ -70,6 +70,7 @@
             android:onClick="btnShareSMClicked"/>
 
     <Button
+            android:id="@+id/btnSetRingtone"
             android:layout_width="220dp"
             android:layout_height="50dp"
             android:background="@drawable/button_bg_solid"
@@ -84,6 +85,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnSound"
+            android:visibility="invisible"
             android:onClick="btnRingtoneClicked"/>
 
     <com.google.android.gms.ads.AdView
@@ -96,4 +98,19 @@
             app:layout_constraintRight_toRightOf="parent"
             app:adSize="SMART_BANNER"
             app:adUnitId="@string/banner_ad_id" />
+
+    <View   android:id="@+id/modalPanel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#AA000000"
+          />
+    <ProgressBar
+            android:id="@+id/pbLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+    />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,27 +10,45 @@ import androidx.lifecycle.ViewModelProviders
 import com.cry.buttonbase.viewmodels.MainViewModel
 import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_main.*
-import android.content.SharedPreferences
 import com.google.firebase.analytics.FirebaseAnalytics
 import android.util.StatsLog.logEvent
-import android.content.DialogInterface
-import android.content.Intent
-import android.content.ActivityNotFoundException
 import android.app.Dialog
+import android.content.*
 import android.net.Uri
+import android.os.Build
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import android.media.RingtoneManager
+import android.provider.MediaStore
+import android.provider.SyncStateContract.Helpers.update
+import java.io.File
+import android.content.ContentUris
+import android.R.attr.path
+import android.provider.SyncStateContract.Helpers.update
+import android.content.ContentValues
+
+
+
+
+
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel : MainViewModel
     lateinit var buttonStateObserver : Observer<Boolean>
+    lateinit var fileStateObserver : Observer<Boolean>
 
     val PREFS_NAME = "preferences"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            modalPanel.elevation = 5f
+            pbLoading.elevation = 6f
+        }
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
@@ -39,9 +57,24 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.ButtonPressed.observe(this, buttonStateObserver)
 
+        fileStateObserver = Observer {
+            if (it){
+                enableButton()
+            }
+        }
+        viewModel.fileExistData.observe(this, fileStateObserver)
+
         setupAds()
 
         setupRateDialog()
+    }
+
+    fun enableButton()
+    {
+        //stop the spinner
+        pbLoading.visibility = View.INVISIBLE
+        modalPanel.visibility = View.INVISIBLE
+        //btnSetRingtone.visibility = View.VISIBLE
     }
 
     fun setupRateDialog()
@@ -116,7 +149,7 @@ class MainActivity : AppCompatActivity() {
 
     fun btnRingtoneClicked(v : View)
     {
-
+        setRingtone(this, File(filesDir, "sound.mp3").path)
     }
 
     fun btnFollowFbClicked(v : View)
@@ -139,8 +172,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.btnShareSMPressed()
     }
 
-    fun setupAds()
-    {
+    fun setupAds() {
         val adRequest = AdRequest.Builder()
             .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
             .build()
@@ -149,5 +181,32 @@ class MainActivity : AppCompatActivity() {
         } catch (ex: Exception) {
             Log.e("Ads", ex.message)
         }
+    }
+
+    private fun setRingtone(context: Context, path: String?) {
+        /*if (path == null) {
+            return
+        }
+        val file = File(path)
+        val contentValues = ContentValues()
+        contentValues.put(MediaStore.MediaColumns.DATA, file.absolutePath)
+        val filterName = path.substring(path.lastIndexOf("/") + 1)
+        contentValues.put(MediaStore.MediaColumns.TITLE, filterName)
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
+        contentValues.put(MediaStore.MediaColumns.SIZE, file.length())
+        contentValues.put(MediaStore.Audio.Media.IS_RINGTONE, true)
+        //val uri = MediaStore.Audio.Media.getContentUriForPath(path)
+
+        Log.i("", "the absolute path of the file is :" + file.getAbsolutePath())
+        val uri = MediaStore.Audio.Media.getContentUriForPath(
+            file.getAbsolutePath()
+        )
+        val newUri = context.contentResolver.insert(uri, contentValues)
+        Log.i("", "the ringtone uri is :$newUri")
+        RingtoneManager.setActualDefaultRingtoneUri(
+            context,
+            RingtoneManager.TYPE_RINGTONE, newUri
+        )
+        */
     }
 }
