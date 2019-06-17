@@ -1,9 +1,13 @@
 package com.cry.buttonbase.viewmodels
 
 import android.app.Application
+import android.content.Context
 import android.media.MediaPlayer
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import com.cry.buttonbase.core.utils.*
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.cry.buttonbase.models.Repositories.IpRepository
@@ -50,14 +54,27 @@ class MainViewModel(application : Application) : ViewModelBase(application)
         fileExists = localFile.isFile
         _fileExistData.postValue(fileExists)
 
-        firebaseUtils.authUser(app) {
-            if (it) {
-                if (!fileExists)
-                    firebaseUtils.getFile{ downloaded ->
-                        fileExists = downloaded
-                        _fileExistData.postValue(fileExists)
-                    }
+        val cm = app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork : NetworkInfo? = cm.activeNetworkInfo
+        val isConnected : Boolean = activeNetwork?.isConnected == true
 
+        if (isConnected) {
+            firebaseUtils.authUser(app) {
+                if (it) {
+                    if (!fileExists)
+                        firebaseUtils.getFile { downloaded ->
+                            fileExists = downloaded
+                            _fileExistData.postValue(fileExists)
+                        }
+
+                }
+            }
+        }
+        else {
+            if (!fileExists)
+            {
+                Toast.makeText(app, "Unable to download content, no Network connection!", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
